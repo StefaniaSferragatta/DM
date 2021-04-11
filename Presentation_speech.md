@@ -14,7 +14,14 @@
 
 ## MySQL
 
-- First query: Given a specific drug, how many of the individuals present in the RNA table could potentially be treated for each cancer type ? 
+- First query: Given a specific drug, how many of the individuals could potentially be treated for each cancer type ? 
 - Second query: Which are the tumor suppressor genes that are overexpressed in at list 8 cancer types in our population? 
-- Third query: Given a specific cacncer type, which is the percentage of oncogenes that are actually overexpressed in the population under consideration?
+- Third query: Given a specific canCcer type, which is the percentage of oncogenes that are actually overexpressed in the population under consideration?
 - Fourth query: Given an individual (sample), which are the overexpressed genes and which are the type of mutations known for those genes?
+
+
+## OPTIMIZATION
+- Changing the schema [deleting 'Converter' table, added Hugo to RNA]
+- Adding integrity constraints [domain constraints (defining a set of valid values for each attribute), the entity integrity constraint (primary key value cannot be null because it is used to identify individual rows in relation)]
+- Adding indexes [used to quickly find rows with specific column values. The B-Tree data structure allows you to quickly find a specific value, a set of values or a range of values, corresponding to the operators as =,>, ≤, between, in, and so on, in a 'WHERE' clause. Without an index, MySQL must read each line of the table in sequence.]
+- There was no need to add more views to those already created.
