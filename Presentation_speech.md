@@ -2,7 +2,7 @@
 
 - We decided to investigate the relationship between gene expression level and treatment (drugs)
 - We have relied on 3 databases and preprocessed the data with python to extract the relevant information (csv)
-  1. HPA: level of RNA expressionindividuals) for 132 genes in more than 50 cancer types
+  1. HPA: level of RNA expression in many samples (individuals) for 132 genes in more than 50 cancer types
   2. ONCOKB: gene mutation annotation - drug association
   3. HGNC: gene ID conversion
 
