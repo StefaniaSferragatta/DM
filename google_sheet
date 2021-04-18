@@ -5,20 +5,21 @@
 
 (1)
 
-# The primary tables have been imported from the interface after preprocessing (attached python file)
+# Primary tables have been imported using the interface after python preprocessing
+# The only table that has been defined through code is the one reported below
+# The tables will be redefined for optimization purposes (3)
 
 CREATE TABLE thresholds (gene text(10), thsd double);
-
 INSERT INTO thresholds (
 SELECT gene, AVG(fpkm) AS thsd
-FROM rna_opt
+FROM rna
 GROUP BY gene);
 
 
 (2)
 
 # Query 1
-# Show the number of sample for cancer type that pass the thsd and have the given associated drug
+# Show the number of samples that can be treated with a given drug for each cancer type
 
 SELECT RNA.CANCER, COUNT(DISTINCT RNA.SAMPLE) as NUM_SAMPLE
 FROM RNA AS RNA JOIN THRESHOLDS AS TH ON RNA.GENE=TH.GENE
@@ -31,7 +32,7 @@ AND (RNA.GENE) IN (
 GROUP BY RNA.CANCER;
 
 # Query 2
-# Show the different types of drugs that could be used, given that the gene is a tumor  suppressor and the type of cancer is ‘OV’    
+# Given that the gene is a tumor suppressor and the type of cancer is ‘OV’, which are the possible drugs that could be used for the treatment?    
 
 SELECT DISTINCT DR.drugs
 FROM oncokb_drug AS DR JOIN onco_genes AS GN ON DR.HUGO_GENE=GN.HUGO_GENE
@@ -77,7 +78,7 @@ WHERE EXISTS (
         WHERE TH.thsd<FPKM_GBM.AVG_FPKM)); 
            
 # Query 5
-# Find the sample which could be treated with the greatest number of drugs
+# Find the sample which could potentially be treated with the greatest number of drugs
 
 SELECT SAMPLE, MAX(NUM_SAMPLE) AS MAX_DRUGS_PER_SAMPLE
 FROM (
@@ -93,7 +94,7 @@ FROM (
             GROUP BY RNA.SAMPLE) AS MAX_SAMPLE;
 
 # Query 6
-# Show the gene whose alteration can be treated with one or two drugs, but are not oncogenes
+# Show the gene whose alterations can be treated with more than two drugs, but are not oncogenes
 
 SELECT HUGO_GENE, IsTumorSuppressorGene
 FROM oncokb_drug JOIN onco_genes USING (hugo_gene)
@@ -119,7 +120,7 @@ SELECT (
             SELECT HUGO_GENE FROM ONCO_GENES WHERE ISONCOGENE = 1))) / (SELECT COUNT(*) FROM THRESHOLDS) * 100 AS PERCENTAGE;
 
 # Query 8
-# Find ensembl gene id subjected to a specific type of alteration
+# Find the ensembl gene id subjected to a specific type of alteration
 
 SELECT EnsemblgeneID AS ensemble_gene
 FROM converter
@@ -155,10 +156,9 @@ WHERE HUGO_GENE IN (
         WHERE RNA.FPKM>TH.THSD AND RNA.SAMPLE = 'TCGA-2F-A9KO-01A'));
 
 
-
 (3)
 
-# Changes in the SCHEMA structure, INDEXES  and KEYS
+# SCHEMA, INDEXES and KEYS
 
 CREATE TABLE RNA_OPT(
 HUGO_GENE VARCHAR(30),
@@ -264,7 +264,7 @@ ORDER BY COUNT(drugs) desc;
 # running time 0.000 sec
 
 # Query 2 - optimized
-# SHOW THE DIFFERENT TYPES OF DRUGS GIVEN THAT THE GENE IS A TUMOR SUPPRESSOR AND THE CANCER IS 'OV'
+
 SELECT DISTINCT DR.drugs
 FROM oncokb_drugs_opt AS DR JOIN onco_genes_opt AS GN ON DR.HUGO_GENE=GN.HUGO_GENE
 WHERE GN.IsTumorSuppressorGene = 1
