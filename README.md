@@ -10,3 +10,4 @@ Database:
 
 ### NEO4J
 import csv: https://neo4j.com/developer/guide-import-csv/
+create nodes and relathionships: https://www.youtube.com/watch?v=1U6iUTV_Dco&ab_channel=mfschulte222
