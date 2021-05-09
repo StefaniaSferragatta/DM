@@ -1,0 +1,14 @@
+//load DRUGS
+LOAD CSV WITH HEADERS FROM 'file:///drugs.csv' AS row
+WITH row.Gene AS Gene, row.Alterations AS Alterations, row.`Cancer Types` AS CancerTypes, row.`Drugs (for therapeutic implications only)` AS Drugs
+RETURN  Gene, Alterations, CancerTypes, Drugs;
+
+//load GENES
+LOAD CSV WITH HEADERS FROM 'file:///genes.csv' AS row
+WITH row.`Hugo Symbol` AS Gene, toInteger(row.`OncoKB Annotated`) AS IsInOncoKB,  toInteger(row.`Is Tumor Suppressor Gene`) AS IsTumorSuppressor, toInteger(row.`Is Oncogene`) AS IsOncoGene
+RETURN Gene, IsInOncoKB, IsTumorSuppressor, IsOncoGene;
+
+//load RNA
+LOAD CSV WITH HEADERS FROM 'file:///rna.csv' AS row
+WITH row.`Hugo Symbol` AS Gene, row.Sample AS Sample, toInteger(row.FPKM) AS FPKM, row.Cancer AS CancerType
+RETURN Gene, Sample, FPKM, CancerType;
