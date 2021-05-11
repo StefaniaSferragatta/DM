@@ -1,0 +1,4 @@
+//sample_gene_relationship
+MATCH  (g:Gene), (s:Sample)
+CREATE (s)-[r:HAS]->(g)
+RETURN r
