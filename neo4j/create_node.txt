@@ -1,12 +1,14 @@
 //Create_node
-
 //GENES
 LOAD CSV WITH HEADERS FROM "file:///genes.csv" AS genes CREATE (g:Gene {gene: genes.Hugo_Symbol, is_annotated: genes.OncoKB_Annotated, is_oncogene: genes.Is_Oncogene, is_tumor_suppressor: genes.Is_Tumor_Suppressor_Gene})
 return g
-limit 10;
+limit 100;
 
 //SAMPLE
-LOAD CSV WITH HEADERS FROM "file:///samples.csv" AS sample CREATE (s:Sample {cancer: sample.Cancer, gene: sample.Hugo})
-return s
-LIMIT 10;
+// LOAD CSV WITH HEADERS FROM "file:///samples.csv" AS sample CREATE (s:Sample {cancer: sample.Cancer, gene: sample.Sample})
+// return s
+// LIMIT 10;
 
+//DRUGS
+// LOAD CSV WITH HEADERS FROM "file:///drugs.csv" AS drug CREATE (d:Drug {name: drug.Drugs})
+// return d
