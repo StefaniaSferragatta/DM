@@ -1,4 +1,12 @@
 //sample_gene_relationship
-MATCH  (g:Gene), (s:Sample)
-CREATE (s)-[r:HAS]->(g)
-RETURN r
+
+// LOAD CSV WITH HEADERS FROM "file:///samples.csv" AS csvLine 
+// MERGE (g:Gene {name: csvLine.Hugo })
+// CREATE (s:Sample {name: csvLine.Sample, cancer: csvLine.Cancer})
+// CREATE (g)-[r:IS_OVEREXPRESSED]->(s)
+
+// gene_drugs_relationship
+LOAD CSV WITH HEADERS FROM "file:///drugs.csv" AS csvLine 
+MERGE (g:Gene {name: csvLine.Gene })
+CREATE (d:Drug {name: csvLine.Drugs, cancer: csvLine.Cancer_types})
+CREATE (g)-[r:alteration {name: csvLine.Alterations}]->(d)
