@@ -1,0 +1,4 @@
+// match given drug - gene
+MATCH (p:Drug),(s:Sample)
+MATCH (p)<-[:alteration]-(g:Gene)-[:IS_OVEREXPRESSED]->(s)
+return g.name;
