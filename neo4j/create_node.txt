@@ -1,14 +1,20 @@
 //Create_node
+
 //GENES
-LOAD CSV WITH HEADERS FROM "file:///genes.csv" AS genes CREATE (g:Gene {gene: genes.Hugo_Symbol, is_annotated: genes.OncoKB_Annotated, is_oncogene: genes.Is_Oncogene, is_tumor_suppressor: genes.Is_Tumor_Suppressor_Gene})
-return g
-limit 100;
+load csv with headers from  
+"file:///sample_s.csv" as csv   
+merge (t:Gene {gene: csv.Hugo})
+on match set t.id =  csv.Hugo
+
+// LOAD CSV WITH HEADERS FROM "file:///genes.csv" AS genes CREATE (g:Gene {name: genes.Hugo_Symbol, is_annotated: genes.OncoKB_Annotated, is_oncogene: genes.Is_Oncogene, is_tumor_suppressor: genes.Is_Tumor_Suppressor_Gene})
+// return g
 
 //SAMPLE
-// LOAD CSV WITH HEADERS FROM "file:///samples.csv" AS sample CREATE (s:Sample {cancer: sample.Cancer, gene: sample.Sample})
-// return s
-// LIMIT 10;
+// LOAD CSV WITH HEADERS FROM "file:///sample_s.csv" AS genes CREATE (g:Gene {gene: genes.Hugo})
+// return g
+
 
 //DRUGS
 // LOAD CSV WITH HEADERS FROM "file:///drugs.csv" AS drug CREATE (d:Drug {name: drug.Drugs})
 // return d
+// limit 10
