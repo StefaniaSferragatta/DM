@@ -13,3 +13,5 @@ import csv: https://neo4j.com/developer/guide-import-csv/
 
 
 create nodes and relationships: https://www.youtube.com/watch?v=1U6iUTV_Dco&ab_channel=mfschulte222
+
+nested queries: https://neo4j.com/developer/cypher/subqueries/
