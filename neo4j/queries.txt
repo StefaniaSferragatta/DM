@@ -39,12 +39,24 @@ MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
 WHERE d.name = 'Dabrafenib'
 return path, g.name;
 
-#3.
-# Find tumor suppressor genes that are overexpressed in at least 8 types of cancer
+// Find tumor suppressor genes that are overexpressed in at least 3 types of cancer
+MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample)
+WHERE node1.is_tumor_suppressor = 1 and count(node2.cancer)>=3
+return node1.name as gene_id
 
-#10.
-# Given a sample ID, return a list of overexpressed gene and possible type of alterations
+MATCH path = ((node1:Gene)-[:is_overexpressed]->(node2:Sample))
+WHERE node1.is_tumor_suppressor = 1 and count(node2.cancer)>=3
+return path
 
-#5.
-# Find the sample which could be treated with the greates number of drugs
+// Given a sample ID, return a list of overexpressed gene and possible type of alterations
+MATCH (node1:Gene)-[r:alteration]->(node2:Drug)
+WHERE ((node1:Gene)-[:is_overexpressed]->(node2:Sample {name: 'TCGA-DK-A6AV-01A-12R-A30C-07'))
+return r.name
+
+MATCH path = ((node1:Gene)-[r:alteration]->(node2:Drug))
+WHERE ((node1:Gene)-[:is_overexpressed]->(node2:Sample {name: 'TCGA-DK-A6AV-01A-12R-A30C-07'))
+return path
+
+// Find the sample which has the greates number of associations
+MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample)
 
