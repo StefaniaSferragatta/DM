@@ -1,4 +1,38 @@
+// query 1 
 // match given drug - gene
-MATCH (p:Drug),(s:Sample)
-MATCH (p)<-[:alteration]-(g:Gene)-[:IS_OVEREXPRESSED]->(s)
+MATCH (g:Gene)-[:alteration]->(p:Drug)
+WHERE p.name = 'Ponatinib' 
 return g.name;
+
+// query 2
+// Return all gene names together with the number
+// of drugs associated
+match (g)-[:alteration]->(d)
+return g.name, count(distinct d)
+
+// Return all gene names together with the number
+// of sample in which are overexpressed
+match (g)-[:IS_OVEREXPRESSED]->(s)
+return g.name, count(distinct s) as num_samples
+
+// query 3
+// Top 5 genes per number of drugs associated 
+
+match (g)-[:alteration]->(d)
+with count(*) AS num_drug, g
+return g.name, num_drug
+order by num_drug desc
+limit 5
+
+// query 4
+// Find a sample given a drug
+MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample)
+WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
+return node2.name as sample_id
+
+// path
+MATCH path = ((node1:Gene)-[:is_overexpressed]->(node2:Sample))
+WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
+return path
+
+
