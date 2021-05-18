@@ -17,7 +17,6 @@ return g.name, count(distinct s) as num_samples
 
 // query 3
 // Top 5 genes per number of drugs associated 
-
 match (g)-[:alteration]->(d)
 with count(*) AS num_drug, g
 return g.name, num_drug
@@ -35,4 +34,8 @@ MATCH path = ((node1:Gene)-[:is_overexpressed]->(node2:Sample))
 WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
 return path
 
+// query 5
+MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
+WHERE d.name = 'Dabrafenib'
+return path, g.name;
 
