@@ -12,7 +12,7 @@ return g.name, count(distinct d)
 
 // Return all gene names together with the number
 // of sample in which are overexpressed
-match (g)-[:IS_OVEREXPRESSED]->(s)
+match (g)-[:is_overexpressed]->(s)
 return g.name, count(distinct s) as num_samples
 
 // query 3
