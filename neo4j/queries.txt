@@ -39,3 +39,12 @@ MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
 WHERE d.name = 'Dabrafenib'
 return path, g.name;
 
+#3.
+# Find tumor suppressor genes that are overexpressed in at least 8 types of cancer
+
+#10.
+# Given a sample ID, return a list of overexpressed gene and possible type of alterations
+
+#5.
+# Find the sample which could be treated with the greates number of drugs
+
