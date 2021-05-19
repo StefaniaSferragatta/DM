@@ -1,10 +1,11 @@
 CYPHER - NEO4J EXPLENATION
 
-In the first part of the hws we have used a Relational database in which the data are stored in tables with fixed a 
+In the first part of the hws we have used a Relational database in which the data were store in tables with a fixed 
 structure, the schema. To query the db we had to use join on the keyes to reach information form a table to another.
-Even if the schema of our db was already normalized, we had to process it a little bit more in order to translate it
+In this last part we choose Neo4j as NoSQL dbms that is based on graph.
+Even if the schema of our database was already normalized, we had to process it a little bit more in order to translate it
 into an equivalent graph model. In this transformation, the rows of entity tables are converted into nodes 
-and the foreign-key relationships and into relationships. 
+and the foreign-key relationships into relationships. 
 Basically each table became a node whose properties are the columns of the table.
 
 The language used to query the Graph db in Neo4j is Cypher that unlike SQL, is all about expressing graph patterns. 
