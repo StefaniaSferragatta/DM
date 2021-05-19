@@ -57,7 +57,7 @@ CALL {
 WITH node1,[(node1)-[r: alteration]->(node2) | r.name] AS alterations_name
 RETURN node1.name as gene_id, alterations_name
 
-// Find the sample which has the greates number of associations
+// Find the sample which has the greates number of associated drugs and its list
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
-RETURN b.name as sample_id, COLLECT(c) as drugs
+RETURN b.name as sample_id, COLLECT(distinct c.name) as drugs
 ORDER BY SIZE(drugs) DESC LIMIT 1
