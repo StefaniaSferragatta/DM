@@ -47,6 +47,7 @@ where num_cancer > 5
 return distinct(g.name) as gene_id, num_cancer
 
 // Given a sample ID, return a list of overexpressed gene and possible type of alterations
+// Given a sample ID, return a list of overexpressed gene and possible type of alterations
 CALL {
     MATCH (node1:Gene)-[r:alteration]->(node2:Drug)
     return node1
@@ -54,8 +55,9 @@ CALL {
     MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})
     return node1
 }
-WITH node1,[(node1)-[r: alteration]->(node2) | r.name] AS alterations_name
-RETURN node1.name as gene_id, alterations_name
+WITH node1,[(node1)-[r: alteration]->(node2) |  r.name] AS alterations_name
+UNWIND alterations_name as alt_name
+RETURN node1.name as gene_id, collect(distinct alt_name)
 
 // Find the sample which has the greates number of associated drugs and its list
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
