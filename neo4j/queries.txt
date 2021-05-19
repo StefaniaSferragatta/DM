@@ -39,6 +39,11 @@ MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
 WHERE d.name = 'Dabrafenib'
 return path, g.name;
 
+// query 6
+// Given a sample, cisualize the drugs associated to the oncogene genes
+match (node2 {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})<-[:is_overexpressed]-(node1 {is_oncogene: '1'})-[:alteration]->(node3)
+return node1,node2,node3
+
 // Find tumor suppressor genes that are overexpressed in at least 5 types of cancer
 match (g:Gene {is_tumor_suppressor: '1'})-[:is_overexpressed]->(node2) 
 with count(distinct node2.cancer) as num_cancer, g
