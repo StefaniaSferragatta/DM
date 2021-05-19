@@ -1,0 +1,38 @@
+CYPHER - NEO4J EXPLENATION
+
+In the first part of the hws we have used a Relational database in which the data are stored in tables with fixed a 
+structure, the schema. To query the db we had to use join on the keyes to reach information form a table to another.
+Even if the schema of our db was already normalized, we had to process it a little bit more in order to translate it
+into an equivalent graph model. In this transformation, the rows of entity tables are converted into nodes 
+and the foreign-key relationships and into relationships. 
+Basically each table became a node whose properties are the columns of the table.
+
+The language used to query the Graph db in Neo4j is Cypher that unlike SQL, is all about expressing graph patterns. 
+
+
+QUERIES EXPLENATION
+1.
+// Given a sample ID, return a list of overexpressed gene and possible type of alterations
+CALL {
+    MATCH (node1:Gene)-[r:alteration]->(node2:Drug)
+    return node1
+    UNION
+    MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})
+    return node1
+}
+WITH node1,[(node1)-[r: alteration]->(node2) |  r.name] AS alterations_name
+UNWIND alterations_name as alt_name
+RETURN node1.name as gene_id, collect(distinct alt_name)
+
+The CALL() procedure is used for the subqueries. Here we combine the two queries with the UNION and we use the 
+result of this to find the list of the alterations. The function UNWIND() is used to transform any list back into individual rows in order to take the distinct values using the
+function COLLECT() that returns a single aggregated list containing the values.
+
+2.
+// Find the sample which has the greates number of associated drugs and its list
+MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
+RETURN b.name as sample_id, COLLECT(distinct c.name) as drugs
+ORDER BY SIZE(drugs) DESC LIMIT 1
+
+Also in this query we use the COLLECT() function to obtain the aggregated list containing the drugs name associated to that sample.
+The size of the list is ordered in decrescent order and we pick the first one only that is the greates.
