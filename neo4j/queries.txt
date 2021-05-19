@@ -66,3 +66,12 @@ RETURN node1.name as gene_id, collect(distinct alt_name)
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
 RETURN b.name as sample_id, COLLECT(distinct c.name) as drugs
 ORDER BY SIZE(drugs) DESC LIMIT 1
+
+// Visualize the sample and the related gene that is oncogene and whose alteration is 'Oncogenic Mutations'
+CALL {
+Match (g)-[:alteration {name : 'Oncogenic Mutations'}]->(:Drug)
+return g
+}
+with g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
+UNWIND list_sample as sample
+return distinct sample
