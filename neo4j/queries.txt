@@ -1,85 +1,91 @@
-// query 1 
+Query 1: 
 // Return all gene names together with the number of drugs associated
-match (g)-[:alteration]->(d)
-return g.name, count(distinct d) as num_drugs
+MATCH (g)-[:alteration]->(d)
+RETURN g.name, count(distinct d) as num_drugs
 
 // Return all gene names together with the number of sample in which are overexpressed
-match (g)-[:is_overexpressed]->(s)
-return g.name, count(distinct s) as num_samples
+MATCH (g)-[:is_overexpressed]->(s)
+RETURN g.name, count(distinct s) as num_samples
 
-// query 2
+Query 2:  
 // Return the gene name given the name of a drug
-MATCH (g:Gene)-[:alteration]->(p:Drug)
-WHERE p.name STARTS WITH "Po" OR p.name CONTAINS 'nib'
-return distinct g.name;
+MATCH (g:Gene)-[:alteration]->(d:Drug)
+WHERE d.name STARTS WITH "P" OR d.name CONTAINS "nib"
+RETURN distinct g.name;
 
-// query 3
+// PATH given a drug name
+MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
+WHERE d.name = 'Dabrafenib'
+RETURN path, g.name;
+
+
+Query 3: 
 // Return the top 5 genes per number of drugs associated 
-match (g)-[:alteration]->(d)
-with count(*) AS num_drug, g
-return g.name, num_drug
-order by num_drug desc
-limit 5
+MATCH (g)-[:alteration]->(d)
+WITH COUNT(*) AS num_drug, g
+RETURN g.name, num_drug
+ORDER BY num_drug DESC
+LIMIT 5
 
-// query 4
-// Given a drug name, return the saple treated with it
+Query 4:  
+// Given a drug name, return the sample treated with it
 MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample)
-WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
-return node2.name as sample_id;
+WHERE EXISTS { ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'})) }
+RETURN node2.name as sample_id;
 
 // PATH of query 4
 MATCH path = ((node1:Gene)-[:is_overexpressed]->(node2:Sample))
 WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
-return path
+RETURN path
 
-// query 5
-MATCH path = ((d)<-[:alteration]-(g:Gene)-[:is_overexpressed]->(s))
-WHERE d.name = 'Dabrafenib'
-return path, g.name;
 
-// query 6
+Query 6: 
 // Given a sample, visualize the drugs associated to the oncogene genes
-match (node2 {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})<-[:is_overexpressed]-(node1 {is_oncogene: '1'})-[:alteration]->(node3)
-return node1,node2,node3
+MATCH (node2 {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})<-[:is_overexpressed]-(node1 {is_oncogene: '1'})-[:alteration]->(node3)
+RETURN node1,node2,node3
 
-// query 7
+
+Query 7:  
 // Find tumor suppressor genes that are overexpressed in at least 5 types of cancer
-match (g:Gene {is_tumor_suppressor: '1'})-[:is_overexpressed]->(node2) 
-with count(distinct node2.cancer) as num_cancer, g
-where num_cancer > 5
-return distinct(g.name) as gene_id, num_cancer
+MATCH (g:Gene {is_tumor_suppressor: '1'})-[:is_overexpressed]->(node2) 
+WITH COUNT(DISTINCT node2.cancer) as num_cancer, g
+WHERE num_cancer > 5
+RETURN DISTINCT (g.name) as gene_id, num_cancer
 
-// query 8
+
+Query 8: 
 // Given a sample ID, return a list of overexpressed gene and possible type of alterations
 CALL {
     MATCH (node1:Gene)-[r:alteration]->(node2:Drug)
-    return node1
+    RETURN node1
+
     UNION
+
     MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})
-    return node1
+    RETURN node1
 }
 WITH node1,[(node1)-[r: alteration]->(node2) |  r.name] AS alterations_name
 UNWIND alterations_name as alt_name
-RETURN node1.name as gene_id, collect(distinct alt_name) as alterations
+RETURN node1.name as gene_id, collect(distinct alt_name)
 
-// query 9
-// Find the sample which has the greates number of associated drugs and its list
+
+Query 9:  
+// Find the sample which has the greatest number of associated drugs and its list
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
 RETURN b.name as sample_id, COLLECT(distinct c.name) as drugs
 ORDER BY SIZE(drugs) DESC LIMIT 1
 
-// query 10
+Query 10: 
 // Visualize the sample and the related gene that is oncogene and whose alteration is 'Oncogenic Mutations'
 CALL {
-Match (g)-[:alteration {name : 'Oncogenic Mutations'}]->(:Drug)
-return g
+MATCH (g)-[:alteration {name : 'Oncogenic Mutations'}]->(:Drug)
+RETURN g
 }
-with g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
+WITH g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
 UNWIND list_sample as sample
-return distinct sample
+RETURN distinct sample
 
 // Add a relationship between the samples and the drugs given the cancer type and the gene
 MATCH (d:Drug)--(g:Gene)--(s:Sample)
 WHERE s.cancer = 'CHOL' AND g.name = 'ALK'
 MERGE (s)-[r:treated_with]->(d)
-RETURN s,d
