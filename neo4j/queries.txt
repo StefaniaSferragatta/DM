@@ -1,8 +1,8 @@
 // query 1 
 // match given drug - gene
 MATCH (g:Gene)-[:alteration]->(p:Drug)
-WHERE p.name = 'Ponatinib' 
-return g.name;
+WHERE p.name STARTS WITH "Po" OR p.name CONTAINS 'nib'
+return distinct g.name;
 
 // query 2
 // Return all gene names together with the number
@@ -60,7 +60,7 @@ CALL {
 }
 WITH node1,[(node1)-[r: alteration]->(node2) |  r.name] AS alterations_name
 UNWIND alterations_name as alt_name
-RETURN node1.name as gene_id, collect(distinct alt_name)
+RETURN node1.name as gene_id, collect(distinct alt_name) as alterations
 
 // Find the sample which has the greates number of associated drugs and its list
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
