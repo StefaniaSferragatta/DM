@@ -33,19 +33,13 @@ MATCH (node1:Gene)-[:is_overexpressed]->(node2:Sample)
 WHERE EXISTS { ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'})) }
 RETURN node2.name as sample_id;
 
-// PATH of query 4
-MATCH path = ((node1:Gene)-[:is_overexpressed]->(node2:Sample))
-WHERE EXISTS ((node1)-[:alteration]->(:Drug {name: 'Ponatinib'}))
-RETURN path
-
-
-Query 6: 
+Query 5: 
 // Given a sample, visualize the drugs associated to the oncogene genes
 MATCH (node2 {name: 'TCGA-B5-A5OE-01A-11R-A31O-07'})<-[:is_overexpressed]-(node1 {is_oncogene: '1'})-[:alteration]->(node3)
 RETURN node1,node2,node3
 
 
-Query 7:  
+Query 6:  
 // Find tumor suppressor genes that are overexpressed in at least 5 types of cancer
 MATCH (g:Gene {is_tumor_suppressor: '1'})-[:is_overexpressed]->(node2) 
 WITH COUNT(DISTINCT node2.cancer) as num_cancer, g
@@ -53,7 +47,7 @@ WHERE num_cancer > 5
 RETURN DISTINCT (g.name) as gene_id, num_cancer
 
 
-Query 8: 
+Query 7: 
 // Given a sample ID, return a list of overexpressed gene and possible type of alterations
 CALL {
     MATCH (node1:Gene)-[r:alteration]->(node2:Drug)
@@ -69,13 +63,13 @@ UNWIND alterations_name as alt_name
 RETURN node1.name as gene_id, collect(distinct alt_name)
 
 
-Query 9:  
+Query 8:  
 // Find the sample which has the greatest number of associated drugs and its list
 MATCH (b)<-[:is_overexpressed]-(a)-[:alteration]->(c)
 RETURN b.name as sample_id, COLLECT(distinct c.name) as drugs
 ORDER BY SIZE(drugs) DESC LIMIT 1
 
-Query 10: 
+Query 9: 
 // Visualize the sample and the related gene that is oncogene and whose alteration is 'Oncogenic Mutations'
 CALL {
 MATCH (g)-[:alteration {name : 'Oncogenic Mutations'}]->(:Drug)
@@ -85,6 +79,7 @@ WITH g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
 UNWIND list_sample as sample
 RETURN distinct sample
 
+Query 10: 
 // Add a relationship between the samples and the drugs given the cancer type and the gene
 MATCH (d:Drug)--(g:Gene)--(s:Sample)
 WHERE s.cancer = 'CHOL' AND g.name = 'ALK'
