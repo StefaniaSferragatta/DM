@@ -76,7 +76,7 @@ with g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
 UNWIND list_sample as sample
 return distinct sample
 
-// Visualize the sample given the cancer and the gene
+// Visualize the samples given the cancer and the gene
 MATCH p=(d:Drug)--(g:Gene)--(s:Sample)
 WHERE s.cancer = 'CHOL' AND g.name = 'ALK'
 RETURN p
