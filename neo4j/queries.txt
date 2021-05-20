@@ -79,7 +79,7 @@ WITH g, (g {is_oncogene:'1'})-[:is_overexpressed]->(:Sample) as list_sample
 UNWIND list_sample as sample
 RETURN distinct sample
 
-Query 10: 
+Query 10: --CONTROLLARE--
 // Add a relationship between the samples and the drugs given the cancer type and the gene
 MATCH (d:Drug)--(g:Gene)--(s:Sample)
 WHERE s.cancer = 'CHOL' AND g.name = 'ALK'
