@@ -1,4 +1,0 @@
-//Create_node
-
-LOAD CSV WITH HEADERS FROM "file:///genes.csv" AS genes CREATE (g:Gene {name: genes.Hugo_Symbol, is_annotated: genes.OncoKB_Annotated, is_oncogene: genes.Is_Oncogene, is_tumor_suppressor: genes.Is_Tumor_Suppressor_Gene})
-return g
