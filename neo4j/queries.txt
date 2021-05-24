@@ -1,3 +1,21 @@
+//Create node Gene
+LOAD CSV WITH HEADERS FROM "file:///genes.csv" AS genes CREATE (g:Gene {name: genes.Hugo_Symbol, is_annotated: genes.OncoKB_Annotated, is_oncogene: genes.Is_Oncogene, is_tumor_suppressor: genes.Is_Tumor_Suppressor_Gene})
+return g
+
+// Create relationships and nodes
+// Create node Sample and relationship 'is_overexpressed'
+LOAD CSV WITH HEADERS FROM "file:///all_cancer_small.csv" AS csvLine 
+MERGE (g:Gene {name: csvLine.Gene})
+CREATE (s:Sample {name: csvLine.Sample, cancer: csvLine.Cancer})
+CREATE (g)-[r:is_overexpressed]->(s);
+
+//Create node Drug and relationship 'alteration'
+LOAD CSV WITH HEADERS FROM "file:///drugs.csv" AS csvLine 
+MERGE (g:Gene {name: csvLine.Gene })
+CREATE (d:Drug {name: csvLine.Drugs, cancer: csvLine.Cancer_types})
+CREATE (g)-[r:alteration {name: csvLine.Alterations}]->(d);
+
+
 Query 1: 
 // Return all gene names together with the number of drugs associated
 MATCH (g)-[:alteration]->(d)
